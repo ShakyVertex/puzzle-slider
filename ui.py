@@ -24,6 +24,9 @@ CLEAR_LOC = [-110, -175]
 NOTIFICATION_LOC = [0, 100]
 NOTIFICATION_TIME = 1
 
+CANVAS_SIZE = 450
+CANVAS_LOC = [-365, 365]
+
 class SingletonMeta(type):
     _instances = {}
 
@@ -128,6 +131,10 @@ class UI(metaclass=SingletonMeta):
         self.draw_button()
         self.draw_text()
         self.draw_move()
+    
+    def refresh_canvas(self):
+        self.clear_text(CANVAS_LOC[0], CANVAS_LOC[1], CANVAS_SIZE)
+        self.draw_square(SQUARE[0], "black", PEN_SIZE)
 
     def onclick(self, x, y):
         if RESET_LOC[0][0] < x < RESET_LOC[0][1] and \

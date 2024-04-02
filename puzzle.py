@@ -1,10 +1,3 @@
-PUZZLE_PATH_DICT = {"luigi": "luigi.puz",
-                    "smiley": "smiley.puz",
-                    "family": "family.puz",
-                    "fifteen": "fifteen.puz",
-                    "yoshi": "yoshi.puz",
-                    "mario": "mario.puz"}
-
 SHAPE_PATH_DICT = {"credits": "Resources/credits.gif",
                    "file_error": "Resources/file_error.gif",
                    "file_warning": "Resources/file_warning.gif",

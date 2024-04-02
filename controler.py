@@ -1,5 +1,6 @@
 import ui
 import tilemap
+import userprompt as up
 
 class SingletonMeta(type):
     _instances = {}
@@ -26,9 +27,14 @@ class Controler(metaclass=SingletonMeta):
 
     def reset(self):
         self.game_map.refresh_map()
+        self.curr_move = 0
+        self.game_ui.draw_move()
 
     def load(self):
-        print("load")
+        self.curr_puzzle = up.input_file()
+        self.game_map.clear(True)
+        self.game_ui.refresh_canvas()
+        self.game_map.load_map(self.curr_puzzle, True)
 
     def quit(self):
         print("quit")
