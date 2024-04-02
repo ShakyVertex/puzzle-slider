@@ -5,6 +5,7 @@ from itertools import product
 
 TURTLE_SPEED = 0
 MAP_CENTER = [-150, 150]
+THUMBNAIL = [300, 340]
 
 class TileMap:
     def __init__(self):
@@ -16,11 +17,6 @@ class TileMap:
         self.puzzle = puzzle.Puzzle()
         self.matrix = None
         self.stamp_dic = {}
-    
-    def load_map(self, puzzle_name: str, order: bool):
-        self.register_shape(puzzle_name)
-        self.create_matrix(order)
-        self.stamp_matrix()
 
     def register_shape(self, puzzle_name: str):
         self.puzzle.load_puzzle(puzzle_name)
@@ -56,3 +52,27 @@ class TileMap:
             loc = [start_point[0] + tile_size * (j + 1),
                    start_point[1] - tile_size * (i + 1)]
             self.stamp_tile(loc, str(self.matrix[i][j]))
+    
+    def stamp_thumbnail(self):
+        self.pen.pu()
+        self.pen.goto(THUMBNAIL[0], THUMBNAIL[1])
+        self.pen.pd()
+        self.pen.shape(self.puzzle.path_dic["thumbnail"])
+        self.stamp_dic["thumbnail"] = self.pen.stamp()
+
+    def load_map(self, puzzle_name: str, order: bool):
+        self.register_shape(puzzle_name)
+        self.create_matrix(order)
+        self.stamp_matrix()
+        self.stamp_thumbnail()
+
+    def clear(self, clear_thumb: bool):
+        if clear_thumb:
+            for stamp_id in self.stamp_dic.values():
+                self.pen.clearstamp(stamp_id)
+        else:
+            for key, stamp_id in self.stamp_dic.items():
+                if key == "thumbnail":
+                    continue
+                else:
+                    self.pen.clearstamp(stamp_id)
