@@ -20,7 +20,15 @@ SHAPE_PATH_DICT = {"credits": "Resources/credits.gif",
 
 INFO = ['name', 'number', 'size']
 
-class Puzzle:
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Puzzle(metaclass=SingletonMeta):
     def __init__(self, puzzle_name = None):
         self.path_dic = {}
         self.info = {}
@@ -28,8 +36,8 @@ class Puzzle:
         if puzzle_name:
             self.load_puzzle(puzzle_name)
     
-    def load_puzzle(self, puzzle_name: str):
-        with open(PUZZLE_PATH_DICT[puzzle_name], "r") as file:
+    def load_puzzle(self, puzzle_dict: str):
+        with open(puzzle_dict, "r") as file:
             for line in file:
                 # Split the line by ":" to separate the key and value
                 key, value = line.strip().split(": ", 1)

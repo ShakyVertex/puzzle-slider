@@ -11,19 +11,30 @@ TILE_GAP = 5
 EFFECT_SIZE = 2
 EFFECT_COLOR = "blue"
 
-class TileMap:
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class TileMap(metaclass=SingletonMeta):
     def __init__(self):
         self.pen = turtle.Turtle()
         self.screen = turtle.Screen()
         self.pen.speed(TURTLE_SPEED)
         self.pen.hideturtle()
 
-        self.puzzle = puzzle.Puzzle()
         self.matrix = None
         self.stamp_dic = {}
+    
+    def link(self):
+        self.puzzle = puzzle.Puzzle()
+        self.controler = controler.Controler()
 
-    def register_shape(self, puzzle_name: str):
-        self.puzzle.load_puzzle(puzzle_name)
+    def register_shape(self, puzzle_dict: str):
+        self.puzzle.load_puzzle(puzzle_dict)
         for path in self.puzzle.path_dic.values():
             self.screen.register_shape(path)
         
@@ -62,13 +73,13 @@ class TileMap:
         self.pen.shape(self.puzzle.path_dic[tile_id])
         self.stamp_dic[tile_id] = self.pen.stamp()
 
-    def stamp_matrix(self):
+    def stamp_matrix(self, effect: bool):
         global tile_size, start_point
         tile_size = int(self.puzzle.info['size'])
         start_point = [MAP_CENTER[0] - (side_length + 1) * (tile_size + TILE_GAP) / 2,
                        MAP_CENTER[1] + (side_length + 1) * (tile_size + TILE_GAP) / 2]
         for i, j in product(range(side_length), range(side_length)):
-            self.stamp_tile([i, j], self.matrix[i][j], True)
+            self.stamp_tile([i, j], self.matrix[i][j], effect)
     
     def stamp_thumbnail(self):
         self.pen.pu()
@@ -77,11 +88,16 @@ class TileMap:
         self.pen.shape(self.puzzle.path_dic["thumbnail"])
         self.stamp_dic["thumbnail"] = self.pen.stamp()
 
-    def load_map(self, puzzle_name: str, order: bool):
-        self.register_shape(puzzle_name)
+    def load_map(self, puzzle_dict: str, order: bool):
+        self.register_shape(puzzle_dict)
         self.create_matrix(order)
-        self.stamp_matrix()
+        self.stamp_matrix(True)
         self.stamp_thumbnail()
+    
+    def refresh_map(self):
+        self.create_matrix(True)
+        self.clear(False)
+        self.stamp_matrix(False)
 
     def clear(self, clear_thumb: bool):
         if clear_thumb:
@@ -119,7 +135,7 @@ class TileMap:
         for loc in surround_loc:
             if self.matrix[loc[0]][loc[1]] == blank_tile:
                 self.swap_tile(matrix_loc, loc)
-                controler.add_move()
+                self.controler.add_move()
 
     def onclick(self, x, y):
         matrix_loc = [((start_point[1] + (tile_size + TILE_GAP) / 2) - y) // (tile_size + TILE_GAP),

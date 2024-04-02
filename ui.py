@@ -12,6 +12,9 @@ PEN_SIZE = 10
 
 BUTTON_TYPE = ["reset_button", "load_button", "quit_button"]
 BUTTON_LOC = [[50, -200], [150, -200], [250, -200]]
+RESET_LOC = [[10, 90], [-235, -165]]
+LOAD_LOC = [[110, 185], [-230, -160]]
+QUIT_LOC = [[210, 290], [-225, -175]]
 
 TEXT_LOC = [-220, -220]
 MOVE_LOC = [-80, -220]
@@ -19,15 +22,26 @@ CLEAR_SIZE = 60
 CLEAR_LOC = [-110, -175]
 
 NOTIFICATION_LOC = [0, 100]
+NOTIFICATION_TIME = 1
 
-class UI:
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class UI(metaclass=SingletonMeta):
     def __init__(self):
         self.pen = turtle.Turtle()
         self.screen = turtle.Screen()
         self.pen.speed(TURTLE_SPEED)
         self.pen.hideturtle()
-        
         self.register_shape()
+
+    def link(self):
+        self.controler = controler.Controler()
 
     def register_shape(self):
         for path in puzzle.SHAPE_PATH_DICT.values():
@@ -38,6 +52,15 @@ class UI:
         stamp_id = self.pen.stamp()
         self.pen.penup()
         time.sleep(SPLASH_TIME)
+        self.pen.clearstamp(stamp_id)
+    
+    def notification(self, type: str):
+        self.pen.pu()
+        self.pen.goto(NOTIFICATION_LOC)
+        self.pen.shape(puzzle.SHAPE_PATH_DICT[type])
+        stamp_id = self.pen.stamp()
+        self.pen.penup()
+        time.sleep(NOTIFICATION_TIME)
         self.pen.clearstamp(stamp_id)
 
     def draw_frame(self):
@@ -85,7 +108,7 @@ class UI:
         self.pen.goto(MOVE_LOC)
         self.pen.pencolor("black")
         self.pen.pd()
-        self.pen.write(str(controler.curr_move), align="center", font=("Arial", 24, "normal"))
+        self.pen.write(str(self.controler.curr_move), align="center", font=("Arial", 24, "normal"))
     
     def clear_text(self, x, y, size):
         # Clear a box area where the text was written
@@ -105,3 +128,14 @@ class UI:
         self.draw_button()
         self.draw_text()
         self.draw_move()
+
+    def onclick(self, x, y):
+        if RESET_LOC[0][0] < x < RESET_LOC[0][1] and \
+        RESET_LOC[1][0] < y < RESET_LOC[1][1]:
+            self.controler.reset()
+        elif LOAD_LOC[0][0] < x < LOAD_LOC[0][1] and \
+        LOAD_LOC[1][0] < y < LOAD_LOC[1][1]:
+            self.controler.load()
+        elif QUIT_LOC[0][0] < x < QUIT_LOC[0][1] and \
+        QUIT_LOC[1][0] < y < QUIT_LOC[1][1]:
+            self.controler.quit()

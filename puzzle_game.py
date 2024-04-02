@@ -10,7 +10,11 @@ def initialize():
     game_ui = ui.UI()
     game_map = tilemap.TileMap()
     screen = turtle.Screen()
-    controler.initialize()
+    game_controler = controler.Controler()
+
+    game_controler.link()
+    game_ui.link()
+    game_map.link()
 
 def start_game():
     global player_name, max_move
@@ -20,10 +24,11 @@ def start_game():
     # controler.max_move = up.input_move()
 
     game_ui.draw_all()
-    game_map.load_map("mario", True)
+    game_map.load_map("mario.puz", True)
 
 def click_handler(x, y):
     game_map.onclick(x, y)
+    game_ui.onclick(x, y)
 
 def main():
     initialize()
