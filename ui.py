@@ -60,9 +60,10 @@ class UI(metaclass=SingletonMeta):
     def notification(self, type: str):
         self.pen.pu()
         self.pen.goto(NOTIFICATION_LOC)
+        self.pen.pd()
         self.pen.shape(puzzle.SHAPE_PATH_DICT[type])
         stamp_id = self.pen.stamp()
-        self.pen.penup()
+        self.pen.pu()
         time.sleep(NOTIFICATION_TIME)
         self.pen.clearstamp(stamp_id)
 

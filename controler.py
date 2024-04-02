@@ -1,5 +1,6 @@
 import ui
 import tilemap
+import os
 import userprompt as up
 
 class SingletonMeta(type):
@@ -16,10 +17,27 @@ class Controler(metaclass=SingletonMeta):
         self.curr_puzzle = "mario.puz"
         self.max_move = None
         self.curr_move = 0
+        self.puz_list = self.get_puz_files()
 
     def link(self):
         self.game_ui = ui.UI()
         self.game_map = tilemap.TileMap()
+
+    def get_puz_files(self):
+        directory = os.path.dirname(os.path.realpath(__file__))
+        puz_files = []
+        for filename in os.listdir(directory):
+            if filename.endswith(".puz"):
+                puz_files.append(filename)
+        return puz_files
+    
+    def start_game(self):
+        self.game_ui.splash_screen()
+        self.player_name = up.input_name()
+        self.max_move = up.input_move()
+
+        self.game_ui.draw_all()
+        self.game_map.load_map(self.puz_list[0], True)
 
     def add_move(self):
         self.curr_move += 1
@@ -31,10 +49,20 @@ class Controler(metaclass=SingletonMeta):
         self.game_ui.draw_move()
 
     def load(self):
-        self.curr_puzzle = up.input_file()
-        self.game_map.clear(True)
-        self.game_ui.refresh_canvas()
-        self.game_map.load_map(self.curr_puzzle, True)
+        if len(self.puz_list) > 10:
+            self.game_ui.notification("file_warning")
+
+        curr_input = up.input_file()
+        if curr_input in self.puz_list:
+            self.curr_puzzle = curr_input
+            self.game_map.clear(True)
+            self.game_ui.refresh_canvas()
+            self.game_map.load_map(self.curr_puzzle, True)
+
+            self.curr_move = 0
+            self.game_ui.draw_move()
+        else:
+            self.game_ui.notification("file_error")
 
     def quit(self):
         print("quit")
