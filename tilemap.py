@@ -6,6 +6,9 @@ from itertools import product
 TURTLE_SPEED = 0
 MAP_CENTER = [-150, 150]
 THUMBNAIL = [300, 340]
+TILE_GAP = 5
+EFFECT_SIZE = 2
+EFFECT_COLOR = "blue"
 
 class TileMap:
     def __init__(self):
@@ -31,12 +34,27 @@ class TileMap:
             self.matrix = [[0] * side_length for _ in range(side_length)]
             num = 1
             for i, j in product(range(side_length), range(side_length)):
-                self.matrix[i][j] = num
+                self.matrix[i][j] = str(num)
                 num += 1
         else:
             pass
     
-    def stamp_tile(self, loc: list[int], tile_id: str):
+    def draw_effect(self, start_point, side_length):
+        self.pen.pu()
+        self.pen.goto(start_point[0], start_point[1])
+        self.pen.pensize(EFFECT_SIZE)
+        self.pen.pencolor(EFFECT_COLOR)
+        self.pen.pd()
+        for _ in range(4):
+            self.pen.forward(side_length)
+            self.pen.right(90)
+    
+    def stamp_tile(self, matrix_loc: list[int], tile_id: str, effect=False):
+        loc = [start_point[0] + (tile_size + TILE_GAP) * (matrix_loc[1] + 1),
+                   start_point[1] - (tile_size + TILE_GAP) * (matrix_loc[0] + 1)]
+        if effect:
+            effect_point = [loc[0] - (tile_size + TILE_GAP) / 2, loc[1] + (tile_size + TILE_GAP) / 2]
+            self.draw_effect(effect_point, (tile_size + TILE_GAP))
         self.pen.pu()
         self.pen.goto(loc[0], loc[1])
         self.pen.pd()
@@ -44,14 +62,12 @@ class TileMap:
         self.stamp_dic[tile_id] = self.pen.stamp()
 
     def stamp_matrix(self):
-        global tile_size
+        global tile_size, start_point
         tile_size = int(self.puzzle.info['size'])
-        start_point = [MAP_CENTER[0] - (side_length + 1) * tile_size / 2,
-                       MAP_CENTER[1] + (side_length + 1) * tile_size / 2]
+        start_point = [MAP_CENTER[0] - (side_length + 1) * (tile_size + TILE_GAP) / 2,
+                       MAP_CENTER[1] + (side_length + 1) * (tile_size + TILE_GAP) / 2]
         for i, j in product(range(side_length), range(side_length)):
-            loc = [start_point[0] + tile_size * (j + 1),
-                   start_point[1] - tile_size * (i + 1)]
-            self.stamp_tile(loc, str(self.matrix[i][j]))
+            self.stamp_tile([i, j], self.matrix[i][j], True)
     
     def stamp_thumbnail(self):
         self.pen.pu()
@@ -76,3 +92,13 @@ class TileMap:
                     continue
                 else:
                     self.pen.clearstamp(stamp_id)
+    
+    def swap_tile(self, loc_1: list[int], loc_2: list[int]):
+        first_tile = self.matrix[loc_1[0]][loc_1[1]]
+        second_tile = self.matrix[loc_2[0]][loc_2[1]]
+        self.matrix[loc_1[0]][loc_1[1]] = second_tile
+        self.matrix[loc_2[0]][loc_2[1]] = first_tile
+        self.pen.clearstamp(self.stamp_dic[first_tile])
+        self.pen.clearstamp(self.stamp_dic[second_tile])
+        self.stamp_tile(loc_1, second_tile)
+        self.stamp_tile(loc_2, first_tile)
