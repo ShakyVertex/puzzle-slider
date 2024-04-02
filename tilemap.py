@@ -102,3 +102,27 @@ class TileMap:
         self.pen.clearstamp(self.stamp_dic[second_tile])
         self.stamp_tile(loc_1, second_tile)
         self.stamp_tile(loc_2, first_tile)
+    
+    def push_tile(self, matrix_loc: list[int]):
+        blank_tile = self.puzzle.info["number"]
+        surround_loc = []
+        if matrix_loc[0] + 1 < side_length:
+            surround_loc.append([matrix_loc[0] + 1, matrix_loc[1]])
+        if matrix_loc[1] + 1 < side_length:
+            surround_loc.append([matrix_loc[0], matrix_loc[1] + 1])
+        if matrix_loc[0] > 0:
+            surround_loc.append([matrix_loc[0] - 1, matrix_loc[1]])
+        if matrix_loc[1] > 0:
+            surround_loc.append([matrix_loc[0], matrix_loc[1] - 1])
+        
+        for loc in surround_loc:
+            if self.matrix[loc[0]][loc[1]] == blank_tile:
+                self.swap_tile(matrix_loc, loc)
+
+    def onclick(self, x, y):
+        matrix_loc = [((start_point[1] + (tile_size + TILE_GAP) / 2) - y) // (tile_size + TILE_GAP),
+                      (x - (start_point[0] - (tile_size + TILE_GAP) / 2)) // (tile_size + TILE_GAP)]
+        matrix_loc[0] = int(matrix_loc[0] - 1)
+        matrix_loc[1] = int(matrix_loc[1] - 1)
+        if -1 < matrix_loc[0] < side_length and -1 < matrix_loc[1] < side_length:
+            self.push_tile(matrix_loc)
