@@ -1,5 +1,6 @@
 import turtle
 import puzzle
+import controler
 import math
 from itertools import product
 
@@ -118,6 +119,7 @@ class TileMap:
         for loc in surround_loc:
             if self.matrix[loc[0]][loc[1]] == blank_tile:
                 self.swap_tile(matrix_loc, loc)
+                controler.add_move()
 
     def onclick(self, x, y):
         matrix_loc = [((start_point[1] + (tile_size + TILE_GAP) / 2) - y) // (tile_size + TILE_GAP),

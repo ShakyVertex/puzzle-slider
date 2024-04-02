@@ -1,26 +1,26 @@
 import ui
 import userprompt as up
 import turtle
-import button
 import tilemap
+import controler
 
 def initialize():
-    global game_ui, game_button, game_map, screen
+    global game_ui, game_map, screen
 
     game_ui = ui.UI()
-    game_button = button.Button()
     game_map = tilemap.TileMap()
     screen = turtle.Screen()
+    controler.initialize()
 
 def start_game():
     global player_name, max_move
 
     # game_ui.splash_screen()
     # player_name = up.input_name()
-    # max_move = up.input_move()
-    game_ui.draw_frame()
-    game_button.draw_button()
-    game_map.load_map("fifteen", True)
+    # controler.max_move = up.input_move()
+
+    game_ui.draw_all()
+    game_map.load_map("mario", True)
 
 def click_handler(x, y):
     game_map.onclick(x, y)
