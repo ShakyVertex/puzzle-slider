@@ -1,5 +1,4 @@
 import turtle
-import ui
 import controler
 
 def input_name():
@@ -16,5 +15,5 @@ def input_file():
     game_controler = controler.Controler()
     statement = "Enter the name of the puzzle you wish to load. Choices are:\n"
     for puz in game_controler.puz_list[:10]:
-        statement += puz + "\n" 
+        statement += puz + "\n"
     return screen.textinput("Load Puzzle", statement)

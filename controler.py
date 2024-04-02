@@ -1,6 +1,7 @@
 import ui
 import tilemap
 import os
+import turtle
 import userprompt as up
 
 class SingletonMeta(type):
@@ -14,9 +15,10 @@ class SingletonMeta(type):
 class Controler(metaclass=SingletonMeta):
     def __init__(self) -> None:
         self.player_name = None
-        self.curr_puzzle = "mario.puz"
-        self.max_move = None
+        self.curr_puzzle = None
         self.curr_move = 0
+        self.max_move = 20
+        self.allow_click = True
         self.puz_list = self.get_puz_files()
 
     def link(self):
@@ -32,9 +34,9 @@ class Controler(metaclass=SingletonMeta):
         return puz_files
     
     def start_game(self):
-        self.game_ui.splash_screen()
-        self.player_name = up.input_name()
-        self.max_move = up.input_move()
+        # self.game_ui.splash_screen()
+        # self.player_name = up.input_name()
+        # self.max_move = up.input_move()
 
         self.game_ui.draw_all()
         self.game_map.load_map(self.puz_list[0], True)
@@ -43,10 +45,16 @@ class Controler(metaclass=SingletonMeta):
         self.curr_move += 1
         self.game_ui.draw_move()
 
+        if self.game_map.win_check():
+            self.win()
+        elif self.curr_move > self.max_move:
+            self.lose()
+
     def reset(self):
         self.game_map.refresh_map()
         self.curr_move = 0
         self.game_ui.draw_move()
+        self.allow_click = True
 
     def load(self):
         if len(self.puz_list) > 10:
@@ -61,8 +69,18 @@ class Controler(metaclass=SingletonMeta):
 
             self.curr_move = 0
             self.game_ui.draw_move()
-        else:
+            self.allow_click = True
+        elif curr_input:
             self.game_ui.notification("file_error")
 
     def quit(self):
-        print("quit")
+        self.game_ui.notification("quitmsg")
+        turtle.bye()
+    
+    def win(self):
+        self.allow_click = False
+        self.game_ui.notification("winner")
+    
+    def lose(self):
+        self.allow_click = False
+        self.game_ui.notification("lose")

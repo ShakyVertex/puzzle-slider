@@ -5,7 +5,7 @@ import tilemap
 import controler
 
 def initialize():
-    global game_ui, game_map, screen, game_controler
+    global screen, game_ui, game_map, game_controler
 
     screen = turtle.Screen()
     game_ui = ui.UI()
@@ -17,7 +17,8 @@ def initialize():
     game_map.link()
 
 def click_handler(x, y):
-    game_map.onclick(x, y)
+    if game_controler.allow_click:
+        game_map.onclick(x, y)
     game_ui.onclick(x, y)
 
 def main():

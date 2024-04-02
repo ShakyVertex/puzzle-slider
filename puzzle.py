@@ -6,7 +6,7 @@ SHAPE_PATH_DICT = {"credits": "Resources/credits.gif",
                    "lose": "Resources/Lose.gif",
                    "quit": "Resources/quit.gif",
                    "quit_button": "Resources/quitbutton.gif",
-                   "quit_msg": "Resources/quitmsg.gif",
+                   "quitmsg": "Resources/quitmsg.gif",
                    "reset_button": "Resources/resetbutton.gif",
                    "splash_screen": "Resources/splash_screen.gif",
                    "winner": "Resources/winner.gif"}

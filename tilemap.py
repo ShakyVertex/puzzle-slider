@@ -144,3 +144,13 @@ class TileMap(metaclass=SingletonMeta):
         matrix_loc[1] = int(matrix_loc[1] - 1)
         if -1 < matrix_loc[0] < side_length and -1 < matrix_loc[1] < side_length:
             self.push_tile(matrix_loc)
+
+    def win_check(self) -> bool:
+        array = []
+        for line in self.matrix:
+            array.extend(line)
+        len_array = len(array)
+        for i in range(len_array - 1):
+            if int(array[i]) > int(array[i + 1]):
+                return False
+        return True
