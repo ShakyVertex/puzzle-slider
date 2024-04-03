@@ -14,12 +14,12 @@ class SingletonMeta(type):
 
 class Controler(metaclass=SingletonMeta):
     def __init__(self) -> None:
-        self.player_name = None
-        self.curr_puzzle = None
+        self.player_name = "dummy"
         self.curr_move = 0
         self.max_move = 20
         self.allow_click = True
         self.puz_list = self.get_puz_files()
+        self.leader_list = self.get_leader()
 
     def link(self):
         self.game_ui = ui.UI()
@@ -51,6 +51,7 @@ class Controler(metaclass=SingletonMeta):
             self.lose()
 
     def reset(self):
+        self.game_ui.turn_off_credit()
         self.game_map.refresh_map()
         self.curr_move = 0
         self.game_ui.draw_move()
@@ -63,6 +64,7 @@ class Controler(metaclass=SingletonMeta):
         curr_input = up.input_file()
         if curr_input in self.puz_list:
             self.curr_puzzle = curr_input
+            self.game_ui.turn_off_credit()
             self.game_map.clear(True)
             self.game_ui.refresh_canvas()
             self.game_map.load_map(self.curr_puzzle, True)
@@ -80,7 +82,31 @@ class Controler(metaclass=SingletonMeta):
     def win(self):
         self.allow_click = False
         self.game_ui.notification("winner")
+        self.game_ui.turn_on_credit()
+        self.save_grade()
     
     def lose(self):
         self.allow_click = False
         self.game_ui.notification("lose")
+        self.game_ui.turn_on_credit()
+
+    def get_leader(self):
+        try:
+            leader_info = []
+            with open("leaderboard.txt", "r") as file:
+                for line in file:
+                    grade, name = line.strip().split(": ", 1)
+                    leader_info.append((int(grade), name))
+                return leader_info
+            
+        except FileNotFoundError:
+            self.game_ui.notification("leaderboard_error")
+            return None
+
+    def save_grade(self):
+        try:
+            with open("leaderboard.txt", "a") as file:
+                line = str(self.curr_move) + ": " + self.player_name + "\n"
+                file.write(line)
+        except FileNotFoundError:
+            self.game_ui.notification("leaderboard_error")

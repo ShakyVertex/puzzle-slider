@@ -1,0 +1,5 @@
+2: momota
+3: shaky
+5: sella
+4: yoshi
+2: dummy

@@ -1,6 +1,5 @@
-import ui
-import userprompt as up
 import turtle
+import ui
 import tilemap
 import controler
 

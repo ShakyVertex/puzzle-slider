@@ -22,10 +22,15 @@ CLEAR_SIZE = 60
 CLEAR_LOC = [-110, -175]
 
 NOTIFICATION_LOC = [0, 100]
-NOTIFICATION_TIME = 3
+NOTIFICATION_TIME = 2
 
 CANVAS_SIZE = 450
 CANVAS_LOC = [-365, 365]
+
+CREDIT_LOC = [-150, 150]
+LEADER_LOC = [150, 300]
+LEADER_LIST_LOC = [150, 240]
+GAP = 25
 
 class SingletonMeta(type):
     _instances = {}
@@ -42,6 +47,7 @@ class UI(metaclass=SingletonMeta):
         self.pen.speed(TURTLE_SPEED)
         self.pen.hideturtle()
         self.register_shape()
+        self.credit_id = None
 
     def link(self):
         self.controler = controler.Controler()
@@ -99,12 +105,12 @@ class UI(metaclass=SingletonMeta):
         for i in range(len(BUTTON_TYPE)):
             self.stamp_pic(BUTTON_TYPE[i], BUTTON_LOC[i])
     
-    def draw_text(self):
+    def draw_text(self, str: str, loc: list[int], color: str, align_: str, size: int):
         self.pen.penup()
-        self.pen.goto(TEXT_LOC)
-        self.pen.pencolor("red")
+        self.pen.goto(loc)
+        self.pen.pencolor(color)
         self.pen.pd()
-        self.pen.write(f"Player Moves:", align="center", font=("Arial", 24, "normal"))
+        self.pen.write(str, align=align_, font=("Arial", size, "normal"))
     
     def draw_move(self):
         self.clear_text(CLEAR_LOC[0], CLEAR_LOC[1], CLEAR_SIZE)
@@ -130,8 +136,9 @@ class UI(metaclass=SingletonMeta):
     def draw_all(self):
         self.draw_frame()
         self.draw_button()
-        self.draw_text()
+        self.draw_text("Player Moves:", TEXT_LOC, "red", "center", 24)
         self.draw_move()
+        self.draw_leader()
     
     def refresh_canvas(self):
         self.clear_text(CANVAS_LOC[0], CANVAS_LOC[1], CANVAS_SIZE)
@@ -147,3 +154,25 @@ class UI(metaclass=SingletonMeta):
         elif QUIT_LOC[0][0] < x < QUIT_LOC[0][1] and \
         QUIT_LOC[1][0] < y < QUIT_LOC[1][1]:
             self.controler.quit()
+    
+    def turn_on_credit(self):
+        self.pen.pu()
+        self.pen.goto(CREDIT_LOC[0], CREDIT_LOC[1])
+        self.pen.pd()
+        self.pen.shape(puzzle.SHAPE_PATH_DICT["credits"])
+        self.credit_id = self.pen.stamp()
+        self.pen.pu()
+    
+    def turn_off_credit(self):
+        if self.credit_id:
+            self.pen.clearstamp(self.credit_id)
+    
+    def draw_leader(self):
+        sorted_leader = sorted(self.controler.leader_list, key=lambda x: x[0])
+        if len(sorted_leader) > 10:
+            sorted_leader = sorted_leader[:10]
+        self.draw_text("LEADER", LEADER_LOC, "red", "left", 16)
+
+        for idx, leader in enumerate(sorted_leader):
+            line = str(leader[0]) + ": " + leader[1]
+            self.draw_text(line, [LEADER_LIST_LOC[0], LEADER_LIST_LOC[1] - GAP * idx], "black", "left", 16)

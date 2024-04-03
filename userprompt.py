@@ -7,8 +7,8 @@ def input_name():
 
 def input_move():
     screen = turtle.Screen()
-    return screen.textinput("5001 Puzzle Slide - Moves", 
-                            "Enter the number of moves (chances) you want (5-200)?")
+    return int(screen.textinput("5001 Puzzle Slide - Moves", 
+                            "Enter the number of moves (chances) you want (5-200)?"))
 
 def input_file():
     screen = turtle.Screen()
