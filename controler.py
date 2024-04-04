@@ -39,7 +39,7 @@ class Controler(metaclass=SingletonMeta):
         # self.max_move = up.input_move()
 
         self.game_ui.draw_all()
-        self.game_map.load_map(self.puz_list[0], True)
+        self.game_map.load_map(self.puz_list[0], False)
 
     def add_move(self):
         self.curr_move += 1
@@ -67,7 +67,7 @@ class Controler(metaclass=SingletonMeta):
             self.game_ui.turn_off_credit()
             self.game_map.clear(True)
             self.game_ui.refresh_canvas()
-            self.game_map.load_map(self.curr_puzzle, True)
+            self.game_map.load_map(self.curr_puzzle, False)
 
             self.curr_move = 0
             self.game_ui.draw_move()

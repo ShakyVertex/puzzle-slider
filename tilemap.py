@@ -3,6 +3,7 @@ import puzzle
 import controler
 import math
 from itertools import product
+import random
 
 TURTLE_SPEED = 0
 MAP_CENTER = [-150, 150]
@@ -49,7 +50,47 @@ class TileMap(metaclass=SingletonMeta):
                 self.matrix[i][j] = str(num)
                 num += 1
         else:
-            pass
+            self.generate_valid()
+
+    def generate_valid(self):
+        array = [i + 1 for i in range(number)]
+        while True:
+            valid_array = array.copy()
+            random.shuffle(valid_array)
+            if self.is_valid(valid_array):
+                break
+        for i in range(number):
+            valid_array[i] = str(valid_array[i])
+
+        valid_matrix = []
+        for i in range(0, number, side_length):
+            valid_matrix.append(valid_array[i: i + side_length])
+        self.matrix = valid_matrix
+
+    def is_valid(self, array: list[int]) -> bool:
+        inversion = self.count_inversion(array)
+        row_of_blank = side_length - array.index(side_length ** 2) // side_length
+
+        if side_length % 2 == 1 and inversion % 2 == 0:
+            return True
+        if side_length % 2 == 0:
+            if row_of_blank % 2 == 0 and inversion % 2 == 1:
+                return True
+            if row_of_blank % 2 == 1 and inversion % 2 == 0:
+                return True
+        return False     
+
+    def count_inversion(self, array):
+        result = 0
+        len_array = len(array)
+        for i in range(len_array - 1):
+            for j in range(i + 1, len_array):
+                if array[i] == side_length ** 2 or \
+                array[j] == side_length ** 2:
+                    continue
+                if array[i] > array[j]:
+                    result += 1
+        return result
     
     def draw_effect(self, start_point, side_length):
         self.pen.pu()
