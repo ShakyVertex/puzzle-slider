@@ -93,6 +93,7 @@ class UI(metaclass=SingletonMeta):
         self.pen.goto(x + width, y - height)
         self.pen.goto(x + width, y)
         self.pen.goto(x, y)
+        self.pen.pu()
     
     def stamp_pic(self, button_type: str, button_loc: list[int]):
         self.pen.penup()
@@ -100,6 +101,7 @@ class UI(metaclass=SingletonMeta):
         self.pen.pendown()
         self.pen.shape(puzzle.SHAPE_PATH_DICT[button_type])
         self.pen.stamp()
+        self.pen.pu()
 
     def draw_button(self):
         for i in range(len(BUTTON_TYPE)):
@@ -111,6 +113,7 @@ class UI(metaclass=SingletonMeta):
         self.pen.pencolor(color)
         self.pen.pd()
         self.pen.write(str, align=align_, font=("Arial", size, "normal"))
+        self.pen.pu()
     
     def draw_move(self):
         self.clear_text(CLEAR_LOC[0], CLEAR_LOC[1], CLEAR_SIZE)
@@ -119,6 +122,7 @@ class UI(metaclass=SingletonMeta):
         self.pen.pencolor("black")
         self.pen.pd()
         self.pen.write(str(self.controler.curr_move), align="center", font=("Arial", 24, "normal"))
+        self.pen.pu()
     
     def clear_text(self, x, y, size):
         # Clear a box area where the text was written
@@ -132,6 +136,7 @@ class UI(metaclass=SingletonMeta):
             self.pen.forward(size)
             self.pen.right(90)
         self.pen.end_fill()
+        self.pen.pu()
 
     def draw_all(self):
         self.draw_frame()

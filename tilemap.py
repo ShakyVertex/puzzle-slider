@@ -101,6 +101,7 @@ class TileMap(metaclass=SingletonMeta):
         for _ in range(4):
             self.pen.forward(side_length)
             self.pen.right(90)
+        self.pen.pu()
     
     def stamp_tile(self, matrix_loc: list[int], tile_id: str, effect=False):
         loc = [start_point[0] + (tile_size + TILE_GAP) * (matrix_loc[1] + 1),
@@ -113,6 +114,7 @@ class TileMap(metaclass=SingletonMeta):
         self.pen.pd()
         self.pen.shape(self.puzzle.path_dic[tile_id])
         self.stamp_dic[tile_id] = self.pen.stamp()
+        self.pen.pu()
 
     def stamp_matrix(self, effect: bool):
         global tile_size, start_point
@@ -128,6 +130,7 @@ class TileMap(metaclass=SingletonMeta):
         self.pen.pd()
         self.pen.shape(self.puzzle.path_dic["thumbnail"])
         self.stamp_dic["thumbnail"] = self.pen.stamp()
+        self.pen.pu()
 
     def load_map(self, puzzle_dict: str, order: bool):
         self.register_shape(puzzle_dict)

@@ -16,7 +16,7 @@ class Controler(metaclass=SingletonMeta):
     def __init__(self) -> None:
         self.player_name = "dummy"
         self.curr_move = 0
-        self.max_move = 20
+        self.max_move = 100
         self.allow_click = True
         self.puz_list = self.get_puz_files()
         self.leader_list = self.get_leader()
