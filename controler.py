@@ -51,7 +51,6 @@ class Controler(metaclass=SingletonMeta):
             self.lose()
 
     def reset(self):
-        self.game_ui.turn_off_credit()
         self.game_map.refresh_map()
         self.curr_move = 0
         self.game_ui.draw_move()
@@ -64,7 +63,6 @@ class Controler(metaclass=SingletonMeta):
         curr_input = up.input_file()
         if curr_input in self.puz_list:
             self.curr_puzzle = curr_input
-            self.game_ui.turn_off_credit()
             self.game_map.clear(True)
             self.game_ui.refresh_canvas()
             self.game_map.load_map(self.curr_puzzle, False)

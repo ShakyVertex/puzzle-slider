@@ -18,7 +18,7 @@ def initialize():
 def click_handler(x, y):
     if game_controler.allow_click:
         game_map.onclick(x, y)
-    game_ui.onclick(x, y)
+        game_ui.onclick(x, y)
 
 def main():
     initialize()

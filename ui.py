@@ -168,10 +168,6 @@ class UI(metaclass=SingletonMeta):
         self.credit_id = self.pen.stamp()
         self.pen.pu()
     
-    def turn_off_credit(self):
-        if self.credit_id:
-            self.pen.clearstamp(self.credit_id)
-    
     def draw_leader(self):
         sorted_leader = sorted(self.controler.leader_list, key=lambda x: x[0])
         if len(sorted_leader) > 10:
