@@ -4,6 +4,7 @@ import os
 import turtle
 import userprompt as up
 import logging
+import puzzle
 
 # Configure logging
 logging.basicConfig(filename='5001_puzzle.err', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -28,6 +29,7 @@ class Controler(metaclass=SingletonMeta):
     def link(self):
         self.game_ui = ui.UI()
         self.game_map = tilemap.TileMap()
+        self.puzzle = puzzle.Puzzle()
 
     def get_puz_files(self):
         directory = os.path.dirname(os.path.realpath(__file__))
@@ -58,7 +60,6 @@ class Controler(metaclass=SingletonMeta):
         self.game_map.refresh_map()
         self.curr_move = 0
         self.game_ui.draw_move()
-        self.allow_click = True
 
     def load(self):
         if len(self.puz_list) > 10:
@@ -66,18 +67,23 @@ class Controler(metaclass=SingletonMeta):
             logging.error("File Warning!")
 
         curr_input = up.input_file()
-        if curr_input in self.puz_list:
-            self.curr_puzzle = curr_input
-            self.game_map.clear(True)
-            self.game_ui.refresh_canvas()
-            self.game_map.load_map(self.curr_puzzle, False)
-
-            self.curr_move = 0
-            self.game_ui.draw_move()
-            self.allow_click = True
+        if curr_input in self.puz_list and self.puzzle.check_valid(curr_input):
+            self.load_valid_puz(curr_input)
         elif curr_input:
             self.game_ui.notification("file_error")
             logging.error("File Error!")
+        else:
+            self.game_ui.notification("file_error")
+            logging.error("File Error!")
+    
+    def load_valid_puz(self, curr_input: str):
+        self.curr_puzzle = curr_input
+        self.game_map.clear(True)
+        self.game_ui.refresh_canvas()
+        self.game_map.load_map(self.curr_puzzle, False)
+
+        self.curr_move = 0
+        self.game_ui.draw_move()
 
     def quit(self):
         self.game_ui.notification("quitmsg")
