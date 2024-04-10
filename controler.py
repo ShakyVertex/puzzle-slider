@@ -3,6 +3,10 @@ import tilemap
 import os
 import turtle
 import userprompt as up
+import logging
+
+# Configure logging
+logging.basicConfig(filename='5001_puzzle.err', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class SingletonMeta(type):
     _instances = {}
@@ -59,6 +63,7 @@ class Controler(metaclass=SingletonMeta):
     def load(self):
         if len(self.puz_list) > 10:
             self.game_ui.notification("file_warning")
+            logging.error("File Warning!")
 
         curr_input = up.input_file()
         if curr_input in self.puz_list:
@@ -72,6 +77,7 @@ class Controler(metaclass=SingletonMeta):
             self.allow_click = True
         elif curr_input:
             self.game_ui.notification("file_error")
+            logging.error("File Error!")
 
     def quit(self):
         self.game_ui.notification("quitmsg")
@@ -99,6 +105,7 @@ class Controler(metaclass=SingletonMeta):
             
         except FileNotFoundError:
             self.game_ui.notification("leaderboard_error")
+            logging.error("Leaderboard Error!")
             return None
 
     def save_grade(self):
@@ -108,3 +115,4 @@ class Controler(metaclass=SingletonMeta):
                 file.write(line)
         except FileNotFoundError:
             self.game_ui.notification("leaderboard_error")
+            logging.error("Leaderboard Error!")

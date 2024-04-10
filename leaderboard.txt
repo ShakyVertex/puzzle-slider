@@ -2,6 +2,3 @@
 3: shaky
 5: sella
 4: yoshi
-2: dummy
-3: dummy
-3: dummy
