@@ -18,7 +18,17 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 class Controler(metaclass=SingletonMeta):
+    """
+    Singleton Controler, Responsible for storing current game progress
+    React to Win / Loss scenerio, Take Control of Reset / Load / Exit button
+    Take Control of file system, acted as the Back-End of game
+    """
     def __init__(self) -> None:
+        """
+        Function - init
+            Set the default player_name / max_move
+            initialize the game and create the scenerio
+        """
         self.player_name = "dummy"
         self.curr_move = 0
         self.max_move = 100
@@ -27,11 +37,20 @@ class Controler(metaclass=SingletonMeta):
         self.leader_list = self.get_leader()
 
     def link(self):
+        """
+        Function - link
+            link / take reference to other singleton class / object
+        """
         self.game_ui = ui.UI()
         self.game_map = tilemap.TileMap()
         self.puzzle = puzzle.Puzzle()
 
     def get_puz_files(self):
+        """
+        Function - get_puz_file
+            Find all the file end with .puz
+            encap them in the controler class dict
+        """
         directory = os.path.dirname(os.path.realpath(__file__))
         puz_files = []
         for filename in os.listdir(directory):
@@ -40,14 +59,25 @@ class Controler(metaclass=SingletonMeta):
         return puz_files
     
     def start_game(self):
-        # self.game_ui.splash_screen()
-        # self.player_name = up.input_name()
-        # self.max_move = up.input_move()
+        """
+        Function - start_game
+            Show the splash screen, let user input name / max move
+            Can the ui / tile map class to load a random tile map
+        """
+        self.game_ui.splash_screen()
+        self.player_name = up.input_name()
+        self.max_move = up.input_move()
 
         self.game_ui.draw_all()
         self.game_map.load_map(self.puz_list[0], False)
 
     def add_move(self):
+        """
+        Function - add_move
+            increment current movement steps by 1
+            call Ui class to update canvas
+            do win check / loss check at this point
+        """
         self.curr_move += 1
         self.game_ui.draw_move()
 
@@ -57,11 +87,22 @@ class Controler(metaclass=SingletonMeta):
             self.lose()
 
     def reset(self):
+        """
+        Function - reset
+            refresh tile map, set the current move to 0
+            call Ui class to update canvas
+        """
         self.game_map.refresh_map()
         self.curr_move = 0
         self.game_ui.draw_move()
 
     def load(self):
+        """
+        Function - load
+            Load a different tile map by user input .puz file name
+            deal with different user input and file error here
+        """
+        # if the puzlist encap in the class has over 10 puz file, raise error
         if len(self.puz_list) > 10:
             self.game_ui.notification("file_warning")
             logging.error("File Warning!")
@@ -70,13 +111,22 @@ class Controler(metaclass=SingletonMeta):
         if curr_input in self.puz_list and self.puzzle.check_valid(curr_input):
             self.load_valid_puz(curr_input)
         elif curr_input:
+            # if the input is invalid, the up function will return None
             self.game_ui.notification("file_error")
             logging.error("File Error!")
         else:
+            # if the puz file is invalid, following will execute
             self.game_ui.notification("file_error")
             logging.error("File Error!")
     
     def load_valid_puz(self, curr_input: str):
+        """
+        Function - load_valid_puz
+            if the puz file already check by puzzle class
+            encapsule the puzzle to controler
+            clear the map and remove the border
+            update the ui both Tile Map and Thumbnail
+        """
         self.curr_puzzle = curr_input
         self.game_map.clear(True)
         self.game_ui.refresh_canvas()
@@ -86,10 +136,22 @@ class Controler(metaclass=SingletonMeta):
         self.game_ui.draw_move()
 
     def quit(self):
+        """
+        Function - quit
+            let the UI prompt quitmsg notification
+            Terminate the turtle program
+        """
         self.game_ui.notification("quitmsg")
         turtle.bye()
     
     def win(self):
+        """
+        Function - win
+            disable the user click event
+            let the UI prompt winner notification
+            let the UI bring credit window
+            save grade to local leaderboard file
+        """
         self.allow_click = False
         self.game_ui.notification("winner")
         self.game_ui.turn_on_credit()
