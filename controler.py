@@ -158,11 +158,23 @@ class Controler(metaclass=SingletonMeta):
         self.save_grade()
     
     def lose(self):
+        """
+        Function - lose
+            disable the user click event
+            let the UI prompt lose notification
+            let the UI bring credit window
+        """
         self.allow_click = False
         self.game_ui.notification("lose")
         self.game_ui.turn_on_credit()
 
     def get_leader(self):
+        """
+        Function - get_leader
+            open up the leaderboard.txt file
+            read all the valid leader info
+            if the file is not found prompt a UI
+        """
         try:
             leader_info = []
             with open("leaderboard.txt", "r") as file:
@@ -177,6 +189,13 @@ class Controler(metaclass=SingletonMeta):
             return None
 
     def save_grade(self):
+        """
+        Function - save_grade
+            this function will be called while game in win status
+            open the leaderboard.txt
+            write a new line with current username and total steps
+            if leaderboard.txt not found, prompt a error in UI
+        """
         try:
             with open("leaderboard.txt", "a") as file:
                 line = str(self.curr_move) + ": " + self.player_name + "\n"

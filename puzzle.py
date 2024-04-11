@@ -25,7 +25,18 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 class Puzzle(metaclass=SingletonMeta):
+    """
+    Puzzle class storing all the img path of every GameObject
+    read and build the path dict by reading from .puz file
+    implement a function to check if .puz file is valid
+    Acted as Database for this game
+    """
     def __init__(self, puzzle_name = None):
+        """
+        Function - init
+            create empty path_dict for every puzzle tile and thumbnail
+            create empty dict storing name, number and size
+        """
         self.path_dic = {}
         self.info = {}
         
@@ -33,6 +44,12 @@ class Puzzle(metaclass=SingletonMeta):
             self.load_puzzle(puzzle_name)
     
     def load_puzzle(self, puzzle_dict: str):
+        """
+        Function - load_puzzle
+            read .puz file from puzzle_dict
+            construct info dict to store name, number and size
+            construct path_dict to store path for tiles and thumbnail
+        """
         with open(puzzle_dict, "r") as file:
             for line in file:
                 # Split the line by ":" to separate the key and value
@@ -43,7 +60,13 @@ class Puzzle(metaclass=SingletonMeta):
                 else:
                     self.path_dic[key] = value
 
-    def check_valid(self, puzzle_dict: str):
+    def check_valid(self, puzzle_dict: str) -> bool:
+        """
+        Function - check_valid
+            read .puz file from puzzle_dict
+            return True if .puz file fulfill all requirements
+            return False otherwise
+        """
         name_valid = number_valid = thumb_valid = size_valid = False
         count = 0
 

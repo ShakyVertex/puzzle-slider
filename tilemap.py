@@ -21,6 +21,12 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 class TileMap(metaclass=SingletonMeta):
+    """
+    TileMap class take control of all the tiles in the map
+    implement a matrix to represent all the tiles
+    deal with swap tile and construct / refresh puzzle matrix in this module
+    act as Back-End of this game
+    """
     def __init__(self):
         self.pen = turtle.Turtle()
         self.screen = turtle.Screen()
