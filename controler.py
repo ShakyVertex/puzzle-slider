@@ -66,10 +66,17 @@ class Controler(metaclass=SingletonMeta):
         """
         self.game_ui.splash_screen()
         self.player_name = up.input_name()
-        self.max_move = up.input_move()
+        self.input_max_move()
 
         self.game_ui.draw_all()
         self.game_map.load_map(self.puz_list[0], False)
+
+    def input_max_move(self):
+        while True:
+            input_move = up.input_move()
+            if input_move:
+                self.max_move = input_move
+                break
 
     def add_move(self):
         """
@@ -152,10 +159,11 @@ class Controler(metaclass=SingletonMeta):
             let the UI bring credit window
             save grade to local leaderboard file
         """
-        self.allow_click = False
-        self.game_ui.notification("winner")
-        self.game_ui.turn_on_credit()
-        self.save_grade()
+        if self.allow_click:
+            self.allow_click = False
+            self.game_ui.notification("winner")
+            self.game_ui.turn_on_credit()
+            self.save_grade()
     
     def lose(self):
         """
@@ -164,9 +172,10 @@ class Controler(metaclass=SingletonMeta):
             let the UI prompt lose notification
             let the UI bring credit window
         """
-        self.allow_click = False
-        self.game_ui.notification("lose")
-        self.game_ui.turn_on_credit()
+        if self.allow_click:
+            self.allow_click = False
+            self.game_ui.notification("lose")
+            self.game_ui.turn_on_credit()
 
     def get_leader(self):
         """

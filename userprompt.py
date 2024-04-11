@@ -20,10 +20,19 @@ def input_move():
     """
     Function - input_move
         prompt the user through a window to let them input maximum move
+        if the user input is valid return the number move
+        else return None
     """
     screen = turtle.Screen()
-    return int(screen.textinput("5001 Puzzle Slide - Moves", 
-                            "Enter the number of moves (chances) you want (5-200)?"))
+    try:
+        user_input = screen.textinput("5001 Puzzle Slide - Moves", 
+                            "Enter the number of moves (chances) you want (5-200)?")
+        if int(user_input) >= 5 and int(user_input) <= 200 and int(user_input) == float(user_input):
+            return int(user_input)
+        else:
+            return None
+    except ValueError:
+        return None
 
 def input_file():
     """

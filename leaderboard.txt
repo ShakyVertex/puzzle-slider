@@ -2,3 +2,7 @@
 3: shaky
 5: sella
 4: yoshi
+6: ShakyVertex
+6: ShakyVertex
+6: ShakyVertex
+9: sellamomta
